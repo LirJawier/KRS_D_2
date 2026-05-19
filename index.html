@@ -61,7 +61,7 @@
         .bottom-block {
             text-align: center;
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 50px;
         }
 
         .holiday-card {
@@ -74,7 +74,7 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             text-align: center;
             position: relative;
-            margin-top: 70px;
+            margin-top: 300px;
         }
 
         .holiday-card::before {
@@ -128,28 +128,32 @@
             transform: scale(1.02);
         }
 
-        .avatars-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
+ .avatars-container {
+    display: flex;
+    justify-content: center;
+    gap: clamp(8px, 3vw, 15px);
+    flex-wrap: nowrap;           /* аватары НЕ переносятся на новую строку */
+    overflow-x: auto;            /* если совсем не влезут — появится скролл */
+    padding: 5px 0;
+}
 
-        .avatar-circle {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background-color: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255,255,255,0.6);
-            transition: transform 0.2s ease;
-            animation: float 3s ease-in-out infinite;
-            cursor: pointer;
-        }
+.avatar-circle {
+    width: clamp(40px, 10vw, 55px);    /* от 40px до 55px, в зависимости от экрана */
+    height: clamp(40px, 10vw, 55px);
+    flex-shrink: 1;                    /* разрешаем сжиматься */
+    min-width: 35px;                   /* но не меньше 35px */
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255,255,255,0.6);
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
 
         .avatar-circle:hover {
             transform: scale(1.05);
