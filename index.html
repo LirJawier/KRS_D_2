@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Пивной праздник — Ну, за...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #1a1a2e;
+            position: relative;
+        }
+
+        .content {
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .holiday-card {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 25px 20px;
+            width: 100%;
+            border: 2px solid #FFD966;
+            text-align: center;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .holiday-card::before {
+            content: "Ну, за...";
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #FFD966;
+        }
+
+        .holiday-name {
+            font-size: 26px;
+            font-weight: bold;
+            color: #FFD966;
+            margin-top: 20px;
+        }
+
+        .refresh-btn {
+            background: #2c2c2c;
+            border: 2px solid #FFD966;
+            padding: 12px 28px;
+            font-weight: bold;
+            font-size: 15px;
+            color: #FFD966;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .avatars-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .avatar-circle {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background-color: #e94560;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .footer-note {
+            font-size: 12px;
+            font-weight: bold;
+            color: #FFD966;
+            margin-top: 15px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #2c2c2c;
+            border: 2px solid #FFD966;
+            padding: 30px 40px;
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+        }
+
+        .modal-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FFD966;
+            margin-bottom: 25px;
+        }
+
+        .modal-close {
+            background: #2c2c2c;
+            border: 2px solid #FFD966;
+            padding: 8px 24px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #FFD966;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="content">
+    <div class="holiday-card" id="holidayCard">
+        <div id="holidayContent">
+            <div class="holiday-name">Загрузка...</div>
+        </div>
+    </div>
+
+    <button class="refresh-btn" id="refreshBtn">
+        <span>🍺</span> Давай по новой, Гоша, все х*ня
+    </button>
+    
+    <div class="avatars-container" id="avatarsContainer"></div>
+    <div class="footer-note">БОССЫ ПИВНОЙ КАЧАЛКИ</div>
+</div>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-text">здесь могла быть реклама Босса</div>
+        <button class="modal-close" id="modalCloseBtn">Закрыть</button>
+    </div>
+</div>
+
+<script>
+    // Контакты (только буквы, без внешних API)
+    const contacts = ['M', 'S', 'O', 'R', 'B'];
+    
+    function loadAvatars() {
+        const container = document.getElementById('avatarsContainer');
+        container.innerHTML = '';
+        contacts.forEach(letter => {
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar-circle';
+            avatar.textContent = letter;
+            avatar.addEventListener('click', () => {
+                document.getElementById('modal').style.display = 'flex';
+            });
+            container.appendChild(avatar);
+        });
+    }
+
+    // Праздники (упрощённая версия)
+    const holidaysList = [
+        "Международный день музеев",
+        "День пионерии",
+        "День рождения Кубика Рубика",
+        "День конной авиации",
+        "День русской печи",
+        "День Розовой Пантеры",
+        "День сырного суфле",
+        "День без грязной посуды"
+    ];
+
+    let currentIndex = -1;
+
+    function getRandomHoliday() {
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * holidaysList.length);
+        } while (randomIndex === currentIndex && holidaysList.length > 1);
+        currentIndex = randomIndex;
+        return holidaysList[randomIndex];
+    }
+
+    function updateHoliday() {
+        const holiday = getRandomHoliday();
+        const container = document.getElementById('holidayContent');
+        container.innerHTML = `<div class="holiday-name">🍺 ${holiday}</div>`;
+    }
+
+    // Модальное окно
+    document.getElementById('modalCloseBtn').addEventListener('click', () => {
+        document.getElementById('modal').style.display = 'none';
+    });
+    window.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('modal')) {
+            document.getElementById('modal').style.display = 'none';
+        }
+    });
+
+    loadAvatars();
+    updateHoliday();
+    document.getElementById('refreshBtn').addEventListener('click', updateHoliday);
+
+    if (window.Telegram && Telegram.WebApp) {
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+    }
+</script>
+</body>
+</html>
