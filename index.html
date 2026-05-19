@@ -24,6 +24,8 @@
             background-attachment: fixed;
             position: relative;
             z-index: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         body::before {
@@ -44,24 +46,29 @@
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            height: 85vh;
+            min-height: 85vh;
             max-width: 550px;
             width: 100%;
+            margin: 0 auto;
+            overflow-y: auto;
+            max-height: 100vh;
         }
 
+        /* Центральный блок с карточкой и кнопкой */
         .center-block {
             width: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            flex-grow: 1;
+            flex: 1 1 auto;
         }
 
+        /* Нижний блок с аватарами и футером */
         .bottom-block {
             text-align: center;
             width: 100%;
-            margin-bottom: 30px;
+            margin-top: auto;
+            margin-bottom: 10px;
         }
 
         .holiday-card {
@@ -74,7 +81,8 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             text-align: center;
             position: relative;
-            margin-top: 170px;
+            margin-bottom: 20px;
+            min-height: 150px;
         }
 
         .holiday-card::before {
@@ -88,7 +96,6 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             opacity: 0.8;
             letter-spacing: 1px;
-            margin-top: auto;
         }
 
         .holiday-name {
@@ -105,6 +112,7 @@
             display: inline-block;
         }
 
+        /* Кнопка — теперь в center-block */
         .refresh-btn {
             background: #2c2c2c;
             border: 2px solid #FFD966;
@@ -118,8 +126,10 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 30px;
+            margin-top: 20px;
+            margin-bottom: 0;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            align-self: center;
         }
 
         .refresh-btn:hover {
@@ -128,32 +138,32 @@
             transform: scale(1.02);
         }
 
- .avatars-container {
-    display: flex;
-    justify-content: center;
-    gap: clamp(8px, 3vw, 15px);
-    flex-wrap: nowrap;           /* аватары НЕ переносятся на новую строку */
-    overflow-x: auto;            /* если совсем не влезут — появится скролл */
-    padding: 5px 0;
-}
+        .avatars-container {
+            display: flex;
+            justify-content: center;
+            gap: clamp(8px, 3vw, 15px);
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 5px 0;
+            margin-bottom: 15px;
+        }
 
-.avatar-circle {
-    width: clamp(40px, 10vw, 55px);    /* от 40px до 55px, в зависимости от экрана */
-    height: clamp(40px, 10vw, 55px);
-    flex-shrink: 1;                    /* разрешаем сжиматься */
-    min-width: 35px;                   /* но не меньше 35px */
-    border-radius: 50%;
-    background-color: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    border: 2px solid rgba(255,255,255,0.6);
-    transition: transform 0.2s ease;
-    cursor: pointer;
-}
-
+        .avatar-circle {
+            width: clamp(40px, 10vw, 55px);
+            height: clamp(40px, 10vw, 55px);
+            flex-shrink: 1;
+            min-width: 35px;
+            border-radius: 50%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255,255,255,0.6);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
 
         .avatar-circle:hover {
             transform: scale(1.05);
@@ -183,7 +193,7 @@
             font-size: 12px;
             font-weight: bold;
             color: #FFD966;
-            margin-top: 15px;
+            margin-bottom: 5px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             letter-spacing: 1px;
         }
@@ -250,18 +260,20 @@
 <body>
 
 <div class="content">
+    <!-- Центральный блок: карточка + кнопка -->
     <div class="center-block">
         <div class="holiday-card" id="holidayCard">
             <div id="holidayContent">
                 <div class="holiday-name">Загрузка...</div>
             </div>
         </div>
-    </div>
-
-    <div class="bottom-block">
         <button class="refresh-btn" id="refreshBtn">
             <span>🍺</span> Давай по новой, Гоша, все х*ня
         </button>
+    </div>
+
+    <!-- Нижний блок: аватары + футер -->
+    <div class="bottom-block">
         <div class="avatars-container" id="avatarsContainer"></div>
         <div class="footer-note">
             БОССЫ ПИВНОЙ КАЧАЛКИ
@@ -282,14 +294,13 @@
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundPosition = "center";
 
-    // ========== НАСТРОЙКА КОНТАКТОВ И ЗАГЛУШЕК ==========
-    // Для первых 4 — Telegram username, для 5-го — своя картинка (или оставить пустым)
+    // ========== НАСТРОЙКА КОНТАКТОВ ==========
     const contacts = [
-        { username: "makoklyuy", fallbackImage: "" },      // Telegram + своя картинка (опционально)
-        { username: "sokolovpeter", fallbackImage: "" },   // Telegram + своя картинка
-        { username: "oldti", fallbackImage: "" },          // Telegram + своя картинка
-        { username: "RNFRI", fallbackImage: "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/Art.jpg" },          // Telegram + своя картинка
-        { username: "BOSS", fallbackImage: "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/dan.jpg" } // Босс — своя картинка
+        { username: "makoklyuy", fallbackImage: "" },
+        { username: "sokolovpeter", fallbackImage: "" },
+        { username: "oldti", fallbackImage: "" },
+        { username: "RNFRI", fallbackImage: "" },
+        { username: "BOSS", fallbackImage: "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/dan.jpg" }
     ];
 
     function getAvatarElement(contact) {
@@ -297,13 +308,11 @@
         container.className = 'avatar-circle';
         container.style.cursor = 'pointer';
         
-        // Для босса (5-й) или если указана своя картинка
         if (contact.fallbackImage && contact.fallbackImage.trim() !== "") {
             const img = document.createElement('img');
             img.src = contact.fallbackImage;
             img.alt = contact.username;
             img.onerror = () => {
-                // Если своя картинка не загрузилась — показываем букву
                 const placeholder = document.createElement('div');
                 placeholder.className = 'avatar-placeholder';
                 placeholder.textContent = contact.username.charAt(0).toUpperCase();
@@ -311,16 +320,13 @@
                 container.appendChild(placeholder);
             };
             container.appendChild(img);
-        } 
-        // Для обычных пользователей — сначала Telegram, потом заглушка
-        else {
+        } else {
             const cleanName = contact.username.replace('@', '');
             const img = document.createElement('img');
             img.src = `https://unavatar.io/telegram/${cleanName}`;
             img.alt = contact.username;
             
             img.onerror = () => {
-                // Если Telegram-аватар не загрузился — показываем букву
                 const placeholder = document.createElement('div');
                 placeholder.className = 'avatar-placeholder';
                 placeholder.textContent = cleanName.charAt(0).toUpperCase();
@@ -344,20 +350,16 @@
     }
 
     function showModal() {
-        const modal = document.getElementById('modal');
-        modal.style.display = 'flex';
+        document.getElementById('modal').style.display = 'flex';
     }
 
     function closeModal() {
-        const modal = document.getElementById('modal');
-        modal.style.display = 'none';
+        document.getElementById('modal').style.display = 'none';
     }
 
-    // ----- ОСТАЛЬНАЯ ЛОГИКА ПРАЗДНИКОВ -----
-    
+    // ----- ЛОГИКА ПРАЗДНИКОВ -----
     function getEmojiForHoliday(holidayName) {
         const lowerName = holidayName.toLowerCase();
-        
         const emojiMap = [
             { keywords: ["пионерии", "пионер"], emoji: "☭" },
             { keywords: ["джинсов"], emoji: "👖" },
@@ -382,40 +384,19 @@
             { keywords: ["безработицы"], emoji: "📉" },
             { keywords: ["космоса"], emoji: "🚀" }
         ];
-
         for (const item of emojiMap) {
             if (item.keywords.some(keyword => lowerName.includes(keyword))) {
                 return item.emoji;
             }
         }
-        
         return "🍻";
     }
 
     const holidaysData = {
-        "05.18": [
-            "Международный день музеев", "Арина Капустница (Рассадница)", "Всемирный день вакцины против СПИДа",
-            "День памяти жертв депортации народов Крыма", "День памяти иконы «Неупиваемая чаша»",
-            "День без грязной посуды", "День рождения майского жжжжука", "День Розовой Пантеры", "День сырного суфле"
-        ],
-        "05.19": [
-            "День пионерии", "День рождения Кубика Рубика", "Иов Горошник", "День конной авиации",
-            "День подразделений служебно-боевой подготовки МВД РФ", "День русской печи", "День пищевой революции",
-            "День парусов на горизонте", "Всемирный день борьбы с воспалительными заболеваниями кишечника",
-            "Всемирный день борьбы с гепатитом С", "День торта «Devil`s Food Cake»"
-        ],
-        "05.20": [
-            "Всемирный день врача-травматолога", "Всемирный день метрологии", "День рождения джинсов", "Купальница",
-            "Всемирный день пчел", "День Волги", "Европейский день моря", "День миллионера",
-            "День собранной клубники", "День ветряных вертушек", "Праздник разливаний", "День пирога «Киш Лорен»"
-        ],
-        "05.21": [
-            "День военного переводчика", "День инвентаризатора (День работника БТИ)", "День полярника",
-            "День Тихоокеанского флота ВМФ России", "Вознесение Господне", "День защиты от безработицы",
-            "Всемирный день культурного разнообразия во имя диалога и развития", "Международный день космоса", "Иван Долгий",
-            "День работников культуры и искусства – Казахстан", "День официантов и официанток", "День музы и вдохновения",
-            "День обмена талисманами", "День клубники со сливками"
-        ]
+        "05.18": ["Международный день музеев", "Арина Капустница (Рассадница)", "Всемирный день вакцины против СПИДа", "День памяти жертв депортации народов Крыма", "День памяти иконы «Неупиваемая чаша»", "День без грязной посуды", "День рождения майского жжжжука", "День Розовой Пантеры", "День сырного суфле"],
+        "05.19": ["День пионерии", "День рождения Кубика Рубика", "Иов Горошник", "День конной авиации", "День подразделений служебно-боевой подготовки МВД РФ", "День русской печи", "День пищевой революции", "День парусов на горизонте", "Всемирный день борьбы с воспалительными заболеваниями кишечника", "Всемирный день борьбы с гепатитом С", "День торта «Devil`s Food Cake»"],
+        "05.20": ["Всемирный день врача-травматолога", "Всемирный день метрологии", "День рождения джинсов", "Купальница", "Всемирный день пчел", "День Волги", "Европейский день моря", "День миллионера", "День собранной клубники", "День ветряных вертушек", "Праздник разливаний", "День пирога «Киш Лорен»"],
+        "05.21": ["День военного переводчика", "День инвентаризатора (День работника БТИ)", "День полярника", "День Тихоокеанского флота ВМФ России", "Вознесение Господне", "День защиты от безработицы", "Всемирный день культурного разнообразия во имя диалога и развития", "Международный день космоса", "Иван Долгий", "День работников культуры и искусства – Казахстан", "День официантов и официанток", "День музы и вдохновения", "День обмена талисманами", "День клубники со сливками"]
     };
 
     let currentHolidayIndex = -1;
@@ -430,32 +411,26 @@
     function getRandomHoliday() {
         const todayKey = getTodayKey();
         const holidaysList = holidaysData[todayKey];
-        
         if (!holidaysList || holidaysList.length === 0) {
             return { name: "Сегодня особенных праздников нет, но пиво всегда есть!", emoji: "🍺" };
         }
-        
         let randomIndex;
         do {
             randomIndex = Math.floor(Math.random() * holidaysList.length);
         } while (randomIndex === currentHolidayIndex && holidaysList.length > 1);
         currentHolidayIndex = randomIndex;
-        
         const holidayName = holidaysList[randomIndex];
         const emoji = getEmojiForHoliday(holidayName);
-        
         return { name: holidayName, emoji: emoji };
     }
 
     function updateHoliday() {
         const holiday = getRandomHoliday();
         const container = document.getElementById('holidayContent');
-        
         let emojiHtml = holiday.emoji;
         if (holiday.emoji === "☭") {
             emojiHtml = '<span class="red-emoji">☭</span>';
         }
-        
         container.innerHTML = `<div class="holiday-name">${emojiHtml} ${escapeHtml(holiday.name)}</div>`;
     }
 
@@ -468,10 +443,7 @@
 
     document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
     window.addEventListener('click', (e) => {
-        const modal = document.getElementById('modal');
-        if (e.target === modal) {
-            closeModal();
-        }
+        if (e.target === document.getElementById('modal')) closeModal();
     });
 
     loadAvatars();
