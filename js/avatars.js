@@ -17,7 +17,7 @@ function getAvatarElement(contact) {
         img.src = contact.fallbackImage;
         img.alt = contact.username;
         img.onerror = () => {
-            const placeholder = document.createElement('div');
+            const placeholder = document.createElement('div'); 
             placeholder.className = 'avatar-placeholder';
             placeholder.textContent = contact.username.charAt(0).toUpperCase();
             container.innerHTML = '';
