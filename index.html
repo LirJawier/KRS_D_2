@@ -327,24 +327,117 @@
     // Адрес вашего бота (замените!)
     const BOT_API_URL = "https://kd-lirjawier.amvera.io";
 
-    // ========== СЧЁТЧИК ПОСЕЩЕНИЙ ==========
-    let userId = localStorage.getItem('tg_user_id');
-    let userUsername = localStorage.getItem('tg_username');
-
-    if (!userId) {
+// Функция для получения данных пользователя из Telegram (с ожиданием)
+async function getTelegramUser() {
+    return new Promise((resolve) => {
+        // Если уже доступно
         if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
-        const tgUser = Telegram.WebApp.initDataUnsafe.user;
+            resolve(Telegram.WebApp.initDataUnsafe.user);
+            return;
+        }
+        
+        // Ждём загрузки Telegram WebApp
+        let attempts = 0;
+        const maxAttempts = 50; // 2 секунды (по 40мс)
+        const interval = setInterval(() => {
+            attempts++;
+            if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
+                clearInterval(interval);
+                resolve(Telegram.WebApp.initDataUnsafe.user);
+            } else if (attempts >= maxAttempts) {
+                clearInterval(interval);
+                resolve(null); // Не дождались — считаем, что это обычный браузер
+            }
+        }, 40);
+    });
+}
+
+// Инициализация пользователя
+let userId = localStorage.getItem('tg_user_id');
+let userUsername = localStorage.getItem('tg_username');
+
+// Флаг, чтобы не создать второго пользователя при повторном вызове
+let isInitialized = false;
+
+async function initUser() {
+    if (isInitialized) return;
+    isInitialized = true;
+    
+    // Если уже есть ID в localStorage — используем его
+    if (userId) {
+        // Но могли измениться username (если пользователь добавил его позже)
+        const tgUser = await getTelegramUser();
+        if (tgUser && tgUser.username && userUsername !== tgUser.username) {
+            userUsername = tgUser.username;
+            localStorage.setItem('tg_username', userUsername);
+            // Обновим username на сервере при следующем визите
+        }
+        // Загружаем статистику и отправляем визит
+        loadStats();
+        trackVisit(userId, userUsername);
+        return;
+    }
+    
+    // Нет ID — получаем из Telegram или создаём web_
+    const tgUser = await getTelegramUser();
+    
+    if (tgUser) {
+        // Пользователь из Telegram
         userId = tgUser.id.toString();
-        userUsername = tgUser.username || null;  // если username нет, то null
+        userUsername = tgUser.username || null;
+        console.log('Telegram пользователь:', userId, 'Username:', userUsername);
     } else {
+        // Не Telegram — генерируем web_ ID
         userId = 'web_' + Math.random().toString(36).substr(2, 9);
         userUsername = null;
+        console.log('Web пользователь:', userId);
     }
+    
+    // Сохраняем в localStorage
     localStorage.setItem('tg_user_id', userId);
-        if (userUsername) {
+    if (userUsername) {
         localStorage.setItem('tg_username', userUsername);
     }
-}   
+    
+    // Загружаем статистику и отправляем визит
+    loadStats();
+    trackVisit(userId, userUsername);
+}
+
+// Обновлённые функции trackVisit и loadStats
+async function trackVisit(uid, username) {
+    try {
+        const response = await fetch(`${BOT_API_URL}/track`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                user_id: uid,
+                username: username || null
+            })
+        });
+        const data = await response.json();
+        document.getElementById('total').innerText = data.total;
+        document.getElementById('unique').innerText = data.unique;
+    } catch (err) {
+        console.warn('Не удалось отправить визит:', err);
+    }
+}
+
+async function loadStats() {
+    try {
+        const response = await fetch(`${BOT_API_URL}/stats`);
+        const data = await response.json();
+        document.getElementById('total').innerText = data.total;
+        document.getElementById('unique').innerText = data.unique;
+    } catch (err) {
+        console.warn('Статистика не загрузилась:', err);
+        document.getElementById('total').innerText = '?';
+        document.getElementById('unique').innerText = '?';
+    }
+}
+
+// Запускаем инициализацию
+initUser();  
 
     async function trackVisit() {
         try {
@@ -574,8 +667,7 @@
         Telegram.WebApp.expand();
     }
 
-    loadStats();
-    trackVisit();
+
 </script>
 </body>
 </html>
