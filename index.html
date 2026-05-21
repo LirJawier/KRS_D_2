@@ -323,54 +323,74 @@
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundPosition = "center";
 
-    // Адрес вашего бота
     const BOT_API_URL = "https://kd-lirjawier.amvera.io";
 
-    // ========== СЧЁТЧИК ПОСЕЩЕНИЙ ==========
-    let userId = localStorage.getItem('tg_user_id');
-    let userUsername = localStorage.getItem('tg_username');
-
+    // ========== ФУНКЦИЯ ОЖИДАНИЯ TELEGRAM ==========
     async function getTelegramUser() {
         return new Promise((resolve) => {
-            if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
-                resolve(Telegram.WebApp.initDataUnsafe.user);
+            // Если уже доступно
+            if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+                resolve(window.Telegram.WebApp.initDataUnsafe.user);
                 return;
             }
+            
+            // Ждём до 3 секунд
             let attempts = 0;
-            const maxAttempts = 50;
+            const maxAttempts = 75; // 3 секунды (по 40мс)
             const interval = setInterval(() => {
                 attempts++;
-                if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
+                if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
                     clearInterval(interval);
-                    resolve(Telegram.WebApp.initDataUnsafe.user);
+                    resolve(window.Telegram.WebApp.initDataUnsafe.user);
                 } else if (attempts >= maxAttempts) {
                     clearInterval(interval);
-                    resolve(null);
+                    resolve(null); // Не дождались — считаем, что это обычный браузер
                 }
             }, 40);
         });
     }
 
+    // ========== ИНИЦИАЛИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ ==========
+    let userId = localStorage.getItem('tg_user_id');
+    let userUsername = localStorage.getItem('tg_username');
+
     async function initUser() {
-        if (!userId) {
+        // Если уже есть ID в localStorage — используем его (но можем обновить username)
+        if (userId) {
+            // Проверим, не появился ли username в Telegram (если пользователь добавил его позже)
             const tgUser = await getTelegramUser();
-            if (tgUser) {
-                userId = tgUser.id.toString();
-                userUsername = tgUser.username || null;
-            } else {
-                userId = 'web_' + Math.random().toString(36).substr(2, 9);
-                userUsername = null;
-            }
-            localStorage.setItem('tg_user_id', userId);
-            if (userUsername) {
+            if (tgUser && tgUser.username && userUsername !== tgUser.username) {
+                userUsername = tgUser.username;
                 localStorage.setItem('tg_username', userUsername);
             }
+            await trackVisit();
+            await loadStats();
+            return;
+        }
+        
+        // Нет ID — получаем из Telegram или создаём web_
+        const tgUser = await getTelegramUser();
+        
+        if (tgUser) {
+            userId = tgUser.id.toString();
+            userUsername = tgUser.username || null;
+            console.log('✅ Telegram user:', userId, 'Username:', userUsername);
+        } else {
+            userId = 'web_' + Math.random().toString(36).substr(2, 9);
+            userUsername = null;
+            console.log('🌐 Web user:', userId);
+        }
+        
+        localStorage.setItem('tg_user_id', userId);
+        if (userUsername) {
+            localStorage.setItem('tg_username', userUsername);
         }
         
         await trackVisit();
         await loadStats();
     }
 
+    // ========== ОТПРАВКА ВИЗИТА ==========
     async function trackVisit() {
         try {
             const response = await fetch(`${BOT_API_URL}/track`, {
@@ -385,10 +405,11 @@
             document.getElementById('total').innerText = data.total;
             document.getElementById('unique').innerText = data.unique;
         } catch (err) {
-            console.warn('Не удалось отправить визит:', err);
+            console.warn('❌ Не удалось отправить визит:', err);
         }
     }
 
+    // ========== ЗАГРУЗКА СТАТИСТИКИ ==========
     async function loadStats() {
         try {
             const response = await fetch(`${BOT_API_URL}/stats`);
@@ -396,7 +417,7 @@
             document.getElementById('total').innerText = data.total;
             document.getElementById('unique').innerText = data.unique;
         } catch (err) {
-            console.warn('Статистика не загрузилась:', err);
+            console.warn('❌ Статистика не загрузилась:', err);
             document.getElementById('total').innerText = '?';
             document.getElementById('unique').innerText = '?';
         }
