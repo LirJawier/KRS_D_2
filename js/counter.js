@@ -19,7 +19,7 @@ async function getTelegramUser() {
                 clearInterval(interval);
                 resolve(null);
             }
-        }, 40);
+        }, 40); 
     });
 }
 
