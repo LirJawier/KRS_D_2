@@ -260,6 +260,39 @@
     </style>
 </head>
 <body>
+    
+    <!-- НАЧАЛО СЧЁТЧИКА ЯНДЕКС МЕТРИКИ -->
+    <script>
+        // 1. Функция отправки хита (посещения)
+        function sendMetrikaHit() {
+            if (typeof Ya !== 'undefined' && Ya.Metrika) {
+                // Отправляем хит на страницу
+                Ya.Metrika.reachGoal('PAGE_VIEW');
+                console.log('[Метрика] Хит отправлен');
+            } else {
+                console.warn('[Метрика] Счетчик еще не загружен');
+            }
+        }
+
+        // 2. Загружаем скрипт Метрики
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+        // 3. Создаем счетчик (ЗАМЕНИТЕ XXXXXXX)
+        ym(109341190, 'init', {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+            webvisor:true,
+            trackHash:true
+        });
+
+        // 4. Отправляем хит после загрузки страницы
+        window.addEventListener('load', sendMetrikaHit);
+    </script>
+    <!-- КОНЕЦ СЧЁТЧИКА -->
+    <noscript><div><img src="https://mc.yandex.ru/watch/109341190" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 
 <div class="content">
     <div class="center-block">
