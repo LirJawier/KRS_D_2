@@ -77,7 +77,7 @@
             margin-top: 150px;
         }
 
-.holiday-card::before {
+    .holiday-card::before {
     content: "Ну, за...";
     position: absolute;
     top: 15px;
@@ -90,7 +90,7 @@
     letter-spacing: 1px;
 }
 
-        .holiday-card::after {
+    .holiday-card::after {
     content: attr(data-date);
     position: absolute;
     bottom: 15px;
@@ -257,6 +257,8 @@
             50% { transform: translateY(-5px); }
             100% { transform: translateY(0px); }
         }
+
+        
     </style>
 </head>
 <body>
@@ -321,7 +323,9 @@
     </div>
 </div>
 
-
+<div id="stats" style="position: fixed; bottom: 10px; left: 10px; font-size: 10px; color: white; background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 5px; z-index: 999; opacity: 0.7;">
+    <span id="total">0</span> | <span id="unique">0</span>
+</div>
 
 <script>
     const MY_BACKGROUND = "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/krsn6.jpeg";
@@ -550,6 +554,14 @@
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
     }
+
+fetch('/counter.php')
+.then(response => response.json())
+.then(data => {
+document.getElementById('total').innerText = data.total;
+document.getElementById('unique').innerText = data.unique;
+        })
+        .catch(err => console.warn('Счётчик не загрузился', err));
 </script>
 </body>
 </html>
