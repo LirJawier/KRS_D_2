@@ -333,18 +333,31 @@ function updateHoliday() {
     }
     const holiday = getNextHoliday();
     const container = document.getElementById('holidayContent');
-    // Внутри updateHoliday после вставки HTML
     const holidayCard = document.getElementById('holidayCard');
-    holidayCard.style.cursor = 'pointer';
-    holidayCard.addEventListener('click', (e) => {
-    // Не реагируем на клик по кнопке
-    if (e.target.closest('.refresh-btn')) return;
+    
+    let emojiHtml = holiday.emoji;
+    if (holiday.emoji === "☭") {
+        emojiHtml = '<span class="red-emoji">☭</span>';
+    }
+    // Важно: добавляем data-holiday-name
+    container.innerHTML = `<div class="holiday-name" data-holiday-name="${escapeHtml(holiday.name)}">${emojiHtml} ${escapeHtml(holiday.name)}</div>`;
+    
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    holidayCard.setAttribute('data-date', `${day}.${month}.${year}`);
+    
+    // Устанавливаем обработчик на клик по названию праздника (один раз, но пересоздаётся при каждом обновлении)
     const holidayNameDiv = document.querySelector('.holiday-name');
     if (holidayNameDiv) {
-        const name = holidayNameDiv.getAttribute('data-holiday-name');
-        searchHoliday(name);
+        holidayNameDiv.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const name = holidayNameDiv.getAttribute('data-holiday-name');
+            searchHoliday(name);
+        });
     }
-});
+}
     
     let emojiHtml = holiday.emoji;
     if (holiday.emoji === "☭") {
