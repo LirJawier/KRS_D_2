@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API</title>
+</head>
+<body>
+    <h1>API Test</h1>
+    <div id="result">Загрузка...</div>
+    <script>
+        fetch('https://kd-lirjawier.amvera.io/stats')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = 
+                    `Total: ${data.total}, Unique: ${data.unique}`;
+            })
+            .catch(err => {
+                document.getElementById('result').innerHTML = 'Ошибка: ' + err.message;
+            });
+    </script>
+</body>
+</html>
