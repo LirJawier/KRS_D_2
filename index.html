@@ -329,21 +329,32 @@
 
     // ========== СЧЁТЧИК ПОСЕЩЕНИЙ ==========
     let userId = localStorage.getItem('tg_user_id');
+    let userUsername = localStorage.getItem('tg_username');
+
     if (!userId) {
         if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
-            userId = Telegram.WebApp.initDataUnsafe.user.id.toString();
-        } else {
-            userId = 'web_' + Math.random().toString(36).substr(2, 9);
-        }
-        localStorage.setItem('tg_user_id', userId);
+        const tgUser = Telegram.WebApp.initDataUnsafe.user;
+        userId = tgUser.id.toString();
+        userUsername = tgUser.username || null;  // если username нет, то null
+    } else {
+        userId = 'web_' + Math.random().toString(36).substr(2, 9);
+        userUsername = null;
     }
+    localStorage.setItem('tg_user_id', userId);
+        if (userUsername) {
+        localStorage.setItem('tg_username', userUsername);
+    }
+}   
 
     async function trackVisit() {
         try {
             const response = await fetch(`${BOT_API_URL}/track`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_id: userId })
+                body: JSON.stringify({ 
+                    user_id: userId,
+                    username: userUsername || null
+                })
             });
             const data = await response.json();
             document.getElementById('total').innerText = data.total;
