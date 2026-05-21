@@ -347,6 +347,14 @@ function updateHoliday() {
     const year = today.getFullYear();
     holidayCard.setAttribute('data-date', `${day}.${month}.${year}`);
 }
-
+// Функция для открытия поиска праздника
+function searchHoliday(holidayName) {
+    // Очищаем название от эмодзи и лишних пробелов
+    const cleanName = holidayName.replace(/[🍻🎉☭🏛️🐝🎂🍺...]/g, '').trim();
+    // Формируем URL поиска (Google)
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(cleanName)}`;
+    // Открываем в новой вкладке
+    window.open(searchUrl, '_blank');
+}
 // ========== ИНИЦИАЛИЗАЦИЯ ==========
 loadHolidaysData();
