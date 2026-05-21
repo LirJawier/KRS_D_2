@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Ну, за...</title>
     <style>
+        /* … все стили остаются как в предыдущей версии … */
         * {
             margin: 0;
             padding: 0;
@@ -77,31 +78,31 @@
             margin-top: 150px;
         }
 
-    .holiday-card::before {
-    content: "Ну, за...";
-    position: absolute;
-    top: 15px;
-    left: 20px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #FFD966;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-    opacity: 0.8;
-    letter-spacing: 1px;
-}
+        .holiday-card::before {
+            content: "Ну, за...";
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #FFD966;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
 
-    .holiday-card::after {
-    content: attr(data-date);
-    position: absolute;
-    bottom: 15px;
-    right: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    color: #FFD966;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-    opacity: 0.7;
-    letter-spacing: 0.5px;
-}
+        .holiday-card::after {
+            content: attr(data-date);
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #FFD966;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            opacity: 0.7;
+            letter-spacing: 0.5px;
+        }
 
         .holiday-name {
             font-size: 26px;
@@ -140,32 +141,31 @@
             transform: scale(1.02);
         }
 
- .avatars-container {
-    display: flex;
-    justify-content: center;
-    gap: clamp(8px, 3vw, 15px);
-    flex-wrap: nowrap;           /* аватары НЕ переносятся на новую строку */
-    overflow-x: auto;            /* если совсем не влезут — появится скролл */
-    padding: 5px 0;
-}
+        .avatars-container {
+            display: flex;
+            justify-content: center;
+            gap: clamp(8px, 3vw, 15px);
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 5px 0;
+        }
 
-.avatar-circle {
-    width: clamp(40px, 10vw, 55px);    /* от 40px до 55px, в зависимости от экрана */
-    height: clamp(40px, 10vw, 55px);
-    flex-shrink: 1;                    /* разрешаем сжиматься */
-    min-width: 35px;                   /* но не меньше 35px */
-    border-radius: 50%;
-    background-color: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    border: 2px solid rgba(255,255,255,0.6);
-    transition: transform 0.2s ease;
-    cursor: pointer;
-}
-
+        .avatar-circle {
+            width: clamp(40px, 10vw, 55px);
+            height: clamp(40px, 10vw, 55px);
+            flex-shrink: 1;
+            min-width: 35px;
+            border-radius: 50%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255,255,255,0.6);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
 
         .avatar-circle:hover {
             transform: scale(1.05);
@@ -257,31 +257,23 @@
             50% { transform: translateY(-5px); }
             100% { transform: translateY(0px); }
         }
-
-        
     </style>
 </head>
 <body>
-    
-    <!-- НАЧАЛО СЧЁТЧИКА ЯНДЕКС МЕТРИКИ -->
+
+    <!-- СЧЁТЧИК ЯНДЕКС МЕТРИКИ -->
     <script>
-        // 1. Функция отправки хита (посещения)
         function sendMetrikaHit() {
             if (typeof Ya !== 'undefined' && Ya.Metrika) {
-                // Отправляем хит на страницу
                 Ya.Metrika.reachGoal('PAGE_VIEW');
                 console.log('[Метрика] Хит отправлен');
             } else {
                 console.warn('[Метрика] Счетчик еще не загружен');
             }
         }
-
-        // 2. Загружаем скрипт Метрики
         (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
         m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
         (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-        // 3. Создаем счетчик (ЗАМЕНИТЕ XXXXXXX)
         ym(109341190, 'init', {
             clickmap:true,
             trackLinks:true,
@@ -289,11 +281,8 @@
             webvisor:true,
             trackHash:true
         });
-
-        // 4. Отправляем хит после загрузки страницы
         window.addEventListener('load', sendMetrikaHit);
     </script>
-    <!-- КОНЕЦ СЧЁТЧИКА -->
     <noscript><div><img src="https://mc.yandex.ru/watch/109341190" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 
 <div class="content">
@@ -323,38 +312,79 @@
     </div>
 </div>
 
+<!-- БЛОК СТАТИСТИКИ -->
 <div id="stats" style="position: fixed; bottom: 10px; left: 10px; font-size: 10px; color: white; background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 5px; z-index: 999; opacity: 0.7;">
     <span id="total">0</span> | <span id="unique">0</span>
 </div>
 
 <script>
+    // ========== ОСНОВНЫЕ НАСТРОЙКИ ==========
     const MY_BACKGROUND = "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/krsn6.jpeg";
     document.body.style.backgroundImage = `url('${MY_BACKGROUND}')`;
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundPosition = "center";
 
-    // ========== НАСТРОЙКА КОНТАКТОВ И ЗАГЛУШЕК ==========
-    // Для первых 4 — Telegram username, для 5-го — своя картинка (или оставить пустым)
+    // Адрес вашего бота (замените!)
+    const BOT_API_URL = "kd-lirjawier.amvera.io";
+
+    // ========== СЧЁТЧИК ПОСЕЩЕНИЙ ==========
+    let userId = localStorage.getItem('tg_user_id');
+    if (!userId) {
+        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
+            userId = Telegram.WebApp.initDataUnsafe.user.id.toString();
+        } else {
+            userId = 'web_' + Math.random().toString(36).substr(2, 9);
+        }
+        localStorage.setItem('tg_user_id', userId);
+    }
+
+    async function trackVisit() {
+        try {
+            const response = await fetch(`${BOT_API_URL}/track`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId })
+            });
+            const data = await response.json();
+            document.getElementById('total').innerText = data.total;
+            document.getElementById('unique').innerText = data.unique;
+        } catch (err) {
+            console.warn('Не удалось отправить визит:', err);
+        }
+    }
+
+    async function loadStats() {
+        try {
+            const response = await fetch(`${BOT_API_URL}/stats`);
+            const data = await response.json();
+            document.getElementById('total').innerText = data.total;
+            document.getElementById('unique').innerText = data.unique;
+        } catch (err) {
+            console.warn('Статистика не загрузилась:', err);
+            document.getElementById('total').innerText = '?';
+            document.getElementById('unique').innerText = '?';
+        }
+    }
+
+    // ========== АВАТАРЫ ==========
     const contacts = [
-        { username: "makoklyuy", fallbackImage: "" },      // Telegram + своя картинка (опционально)
-        { username: "sokolovpeter", fallbackImage: "" },   // Telegram + своя картинка
-        { username: "oldti", fallbackImage: "" },          // Telegram + своя картинка
-        { username: "RNFRI", fallbackImage: "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/Art.jpg" },          // Telegram + своя картинка
-        { username: "BOSS", fallbackImage: "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/dan.jpg" } // Босс — своя картинка
+        { username: "makoklyuy", fallbackImage: "" },
+        { username: "sokolovpeter", fallbackImage: "" },
+        { username: "oldti", fallbackImage: "" },
+        { username: "RNFRI", fallbackImage: "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/Art.jpg" },
+        { username: "BOSS", fallbackImage: "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/dan.jpg" }
     ];
 
     function getAvatarElement(contact) {
         const container = document.createElement('div');
         container.className = 'avatar-circle';
         container.style.cursor = 'pointer';
-        
-        // Для босса (5-й) или если указана своя картинка
+
         if (contact.fallbackImage && contact.fallbackImage.trim() !== "") {
             const img = document.createElement('img');
             img.src = contact.fallbackImage;
             img.alt = contact.username;
             img.onerror = () => {
-                // Если своя картинка не загрузилась — показываем букву
                 const placeholder = document.createElement('div');
                 placeholder.className = 'avatar-placeholder';
                 placeholder.textContent = contact.username.charAt(0).toUpperCase();
@@ -362,26 +392,20 @@
                 container.appendChild(placeholder);
             };
             container.appendChild(img);
-        } 
-        // Для обычных пользователей — сначала Telegram, потом заглушка
-        else {
+        } else {
             const cleanName = contact.username.replace('@', '');
             const img = document.createElement('img');
             img.src = `https://unavatar.io/telegram/${cleanName}`;
             img.alt = contact.username;
-            
             img.onerror = () => {
-                // Если Telegram-аватар не загрузился — показываем букву
                 const placeholder = document.createElement('div');
                 placeholder.className = 'avatar-placeholder';
                 placeholder.textContent = cleanName.charAt(0).toUpperCase();
                 container.innerHTML = '';
                 container.appendChild(placeholder);
             };
-            
             container.appendChild(img);
         }
-        
         container.addEventListener('click', showModal);
         return container;
     }
@@ -394,21 +418,24 @@
         });
     }
 
+    // ========== МОДАЛЬНОЕ ОКНО ==========
     function showModal() {
-        const modal = document.getElementById('modal');
-        modal.style.display = 'flex';
+        document.getElementById('modal').style.display = 'flex';
     }
 
     function closeModal() {
-        const modal = document.getElementById('modal');
-        modal.style.display = 'none';
+        document.getElementById('modal').style.display = 'none';
     }
 
-    // ----- ОСТАЛЬНАЯ ЛОГИКА ПРАЗДНИКОВ -----
-    
+    document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+    window.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('modal')) closeModal();
+    });
+
+    // ========== ПРАЗДНИКИ (ОЧЕРЕДЬ) ==========
+    // Функция возвращает эмодзи для праздника
     function getEmojiForHoliday(holidayName) {
         const lowerName = holidayName.toLowerCase();
-        
         const emojiMap = [
             { keywords: ["пионерии", "пионер"], emoji: "☭" },
             { keywords: ["джинсов"], emoji: "👖" },
@@ -433,43 +460,59 @@
             { keywords: ["безработицы"], emoji: "📉" },
             { keywords: ["космоса"], emoji: "🚀" }
         ];
-
         for (const item of emojiMap) {
-            if (item.keywords.some(keyword => lowerName.includes(keyword))) {
-                return item.emoji;
-            }
+            if (item.keywords.some(keyword => lowerName.includes(keyword))) return item.emoji;
         }
-        
         return "🍻";
     }
 
+    // Данные праздников
     const holidaysData = {
-        "05.18": [
-            "Международный день музеев", "Арина Капустница (Рассадница)", "Всемирный день вакцины против СПИДа",
-            "День памяти жертв депортации народов Крыма", "День памяти иконы «Неупиваемая чаша»",
-            "День без грязной посуды", "День рождения майского жжжжука", "День Розовой Пантеры", "День сырного суфле"
-        ],
-        "05.19": [
-            "День пионерии", "День рождения Кубика Рубика", "Иов Горошник", "День конной авиации",
-            "День подразделений служебно-боевой подготовки МВД РФ", "День русской печи", "День пищевой революции",
-            "День парусов на горизонте", "Всемирный день борьбы с воспалительными заболеваниями кишечника",
-            "Всемирный день борьбы с гепатитом С", "День торта «Devil`s Food Cake»"
-        ],
-        "05.20": [
-            "Всемирный день врача-травматолога", "Всемирный день метрологии", "День рождения джинсов", "Купальница",
-            "Всемирный день пчел", "День Волги", "Европейский день моря", "День миллионера",
-            "День собранной клубники", "День ветряных вертушек", "Праздник разливаний", "День пирога «Киш Лорен»"
-        ],
-        "05.21": [
-            "День военного переводчика", "День инвентаризатора (День работника БТИ)", "День полярника",
-            "День Тихоокеанского флота ВМФ России", "Вознесение Господне", "День защиты от безработицы",
-            "Всемирный день культурного разнообразия во имя диалога и развития", "Международный день космоса", "Иван Долгий",
-            "День работников культуры и искусства – Казахстан", "День официантов и официанток", "День музы и вдохновения",
-            "День обмена талисманами", "День клубники со сливками"
-        ]
+        "05.18": ["Международный день музеев", "Арина Капустница (Рассадница)", "Всемирный день вакцины против СПИДа", "День памяти жертв депортации народов Крыма", "День памяти иконы «Неупиваемая чаша»", "День без грязной посуды", "День рождения майского жжжжука", "День Розовой Пантеры", "День сырного суфле"],
+        "05.19": ["День пионерии", "День рождения Кубика Рубика", "Иов Горошник", "День конной авиации", "День подразделений служебно-боевой подготовки МВД РФ", "День русской печи", "День пищевой революции", "День парусов на горизонте", "Всемирный день борьбы с воспалительными заболеваниями кишечника", "Всемирный день борьбы с гепатитом С", "День торта «Devil`s Food Cake»"],
+        "05.20": ["Всемирный день врача-травматолога", "Всемирный день метрологии", "День рождения джинсов", "Купальница", "Всемирный день пчел", "День Волги", "Европейский день моря", "День миллионера", "День собранной клубники", "День ветряных вертушек", "Праздник разливаний", "День пирога «Киш Лорен»"],
+        "05.21": ["День военного переводчика", "День инвентаризатора (День работника БТИ)", "День полярника", "День Тихоокеанского флота ВМФ России", "Вознесение Господне", "День защиты от безработицы", "Всемирный день культурного разнообразия во имя диалога и развития", "Международный день космоса", "Иван Долгий", "День работников культуры и искусства – Казахстан", "День официантов и официанток", "День музы и вдохновения", "День обмена талисманами", "День клубники со сливками"]
     };
 
-    let currentHolidayIndex = -1;
+    // Переменные для очереди
+    let currentQueue = [];       // массив объектов { name, emoji }
+    let queuePointer = 0;
+    let lastDateKey = '';
+
+    // Функция обновления очереди при смене дня
+    function rebuildQueue(dateKey) {
+        const holidaysList = holidaysData[dateKey];
+        if (!holidaysList || holidaysList.length === 0) {
+            // Если праздников нет, создаём специальное сообщение
+            currentQueue = [{
+                name: "Сегодня особенных праздников нет, но пиво всегда есть!",
+                emoji: "🍺"
+            }];
+        } else {
+            // Создаём массив объектов с эмодзи
+            currentQueue = holidaysList.map(name => ({
+                name: name,
+                emoji: getEmojiForHoliday(name)
+            }));
+        }
+        queuePointer = 0;
+        lastDateKey = dateKey;
+    }
+
+    // Получение следующего праздника из очереди
+    function getNextHoliday() {
+        const todayKey = getTodayKey();
+        if (todayKey !== lastDateKey) {
+            rebuildQueue(todayKey);
+        }
+        // Если очередь всё ещё пуста (на всякий случай)
+        if (currentQueue.length === 0) {
+            return { name: "Нет данных", emoji: "🍺" };
+        }
+        const holiday = currentQueue[queuePointer];
+        queuePointer = (queuePointer + 1) % currentQueue.length;
+        return holiday;
+    }
 
     function getTodayKey() {
         const today = new Date();
@@ -478,36 +521,23 @@
         return `${month}.${day}`;
     }
 
-    function getRandomHoliday() {
-        const todayKey = getTodayKey();
-        const holidaysList = holidaysData[todayKey];
-        
-        if (!holidaysList || holidaysList.length === 0) {
-            return { name: "Сегодня особенных праздников нет, но пиво всегда есть!", emoji: "🍺" };
-        }
-        
-        let randomIndex;
-        do {
-            randomIndex = Math.floor(Math.random() * holidaysList.length);
-        } while (randomIndex === currentHolidayIndex && holidaysList.length > 1);
-        currentHolidayIndex = randomIndex;
-        
-        const holidayName = holidaysList[randomIndex];
-        const emoji = getEmojiForHoliday(holidayName);
-        
-        return { name: holidayName, emoji: emoji };
-    }
-
     function updateHoliday() {
-        const holiday = getRandomHoliday();
+        const holiday = getNextHoliday();
         const container = document.getElementById('holidayContent');
+        const holidayCard = document.getElementById('holidayCard');
         
         let emojiHtml = holiday.emoji;
         if (holiday.emoji === "☭") {
             emojiHtml = '<span class="red-emoji">☭</span>';
         }
-        
         container.innerHTML = `<div class="holiday-name">${emojiHtml} ${escapeHtml(holiday.name)}</div>`;
+        
+        // Обновляем дату в правом нижнем углу
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const year = today.getFullYear();
+        holidayCard.setAttribute('data-date', `${day}.${month}.${year}`);
     }
 
     function escapeHtml(text) {
@@ -517,35 +547,13 @@
         return div.innerHTML;
     }
 
-    document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
-    window.addEventListener('click', (e) => {
-        const modal = document.getElementById('modal');
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
+    // Инициализация очереди при загрузке
+    (function initQueue() {
+        const todayKey = getTodayKey();
+        rebuildQueue(todayKey);
+    })();
 
-    function updateHoliday() {
-    const holiday = getRandomHoliday();
-    const container = document.getElementById('holidayContent');
-    const holidayCard = document.getElementById('holidayCard');
-    
-    let emojiHtml = holiday.emoji;
-    if (holiday.emoji === "☭") {
-        emojiHtml = '<span class="red-emoji">☭</span>';
-    }
-    
-    // Устанавливаем текст праздника
-    container.innerHTML = `<div class="holiday-name">${emojiHtml} ${escapeHtml(holiday.name)}</div>`;
-    
-    // Устанавливаем текущую дату в правый нижний угол
-    const today = new Date();
-    const day = String(today.getDate()).padStart(2, '0');
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const year = today.getFullYear();
-    holidayCard.setAttribute('data-date', `${day}.${month}.${year}`);
-}
-
+    // ========== ЗАПУСК ==========
     loadAvatars();
     updateHoliday();
     document.getElementById('refreshBtn').addEventListener('click', updateHoliday);
@@ -555,13 +563,8 @@
         Telegram.WebApp.expand();
     }
 
-fetch('/counter.php')
-.then(response => response.json())
-.then(data => {
-document.getElementById('total').innerText = data.total;
-document.getElementById('unique').innerText = data.unique;
-        })
-        .catch(err => console.warn('Счётчик не загрузился', err));
+    loadStats();
+    trackVisit();
 </script>
 </body>
 </html>
