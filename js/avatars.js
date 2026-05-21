@@ -3,8 +3,8 @@ const contacts = [
     { username: "makoklyuy", fallbackImage: "" },
     { username: "sokolovpeter", fallbackImage: "" },
     { username: "oldti", fallbackImage: "" },
-    { username: "RNFRI", fallbackImage: "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/Art.jpg" },
-    { username: "BOSS", fallbackImage: "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/dan.jpg" }
+    { username: "RNFRI", fallbackImage: "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/assets/Art.jpg" },
+    { username: "BOSS", fallbackImage: "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/assets/dan.jpg" }
 ];
 
 function getAvatarElement(contact) {
