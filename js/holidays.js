@@ -1,5 +1,5 @@
 // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
-let holidaysData = {};          // будет заполнено из JSON
+let holidaysData = {};
 let currentQueue = [];
 let queuePointer = 0;
 let lastDateKey = '';
@@ -14,8 +14,6 @@ async function loadHolidaysData() {
         holidaysData = await response.json();
         dataLoaded = true;
         console.log('✅ Данные праздников загружены');
-        
-        // Если было отложенное обновление — выполняем
         if (pendingUpdate) {
             rebuildQueue(getTodayKey());
             updateHoliday();
@@ -23,7 +21,6 @@ async function loadHolidaysData() {
         }
     } catch (error) {
         console.error('❌ Не удалось загрузить праздники:', error);
-        // Фallback: пустой объект, чтобы не ломалась очередь
         holidaysData = {};
         dataLoaded = true;
         if (pendingUpdate) {
@@ -37,7 +34,6 @@ async function loadHolidaysData() {
 // ========== ФУНКЦИЯ ПОДБОРА ЭМОДЗИ ==========
 function getEmojiForHoliday(holidayName) {
     const lower = holidayName.toLowerCase();
-    
     const emojiMap = [
         // Государственные, официальные, важные
         { keywords: ["новый год", "новогодние"], emoji: "🎄" },
@@ -54,7 +50,6 @@ function getEmojiForHoliday(holidayName) {
         { keywords: ["день медицинского работника"], emoji: "🩺" },
         { keywords: ["день пограничника"], emoji: "🛡️" },
         { keywords: ["день флага"], emoji: "🏁" },
-        
         // Профессиональные
         { keywords: ["программист", "it"], emoji: "💻" },
         { keywords: ["день бухгалтера", "экономист"], emoji: "🧾" },
@@ -85,7 +80,6 @@ function getEmojiForHoliday(holidayName) {
         { keywords: ["день социолога"], emoji: "📊" },
         { keywords: ["день архивиста"], emoji: "📂" },
         { keywords: ["день нотариуса"], emoji: "📝" },
-        
         // Международные и всемирные
         { keywords: ["международный день", "всемирный день"], emoji: "🌍" },
         { keywords: ["всемирный день здоровья"], emoji: "🌍" },
@@ -97,7 +91,6 @@ function getEmojiForHoliday(holidayName) {
         { keywords: ["всемирный день метеорологии"], emoji: "🌦️" },
         { keywords: ["всемирный день поэзии"], emoji: "📜" },
         { keywords: ["всемирный день театра"], emoji: "🎭" },
-        
         // Еда и напитки
         { keywords: ["пиво", "пивной", "пивовар"], emoji: "🍺" },
         { keywords: ["вино", "винный"], emoji: "🍷" },
@@ -129,7 +122,6 @@ function getEmojiForHoliday(holidayName) {
         { keywords: ["пицца"], emoji: "🍕" },
         { keywords: ["паста"], emoji: "🍝" },
         { keywords: ["суп"], emoji: "🥣" },
-        
         // Природа и животные
         { keywords: ["кот", "кошка"], emoji: "🐱" },
         { keywords: ["собака"], emoji: "🐶" },
@@ -155,87 +147,7 @@ function getEmojiForHoliday(holidayName) {
         { keywords: ["солнце"], emoji: "☀️" },
         { keywords: ["луна"], emoji: "🌙" },
         { keywords: ["звезда"], emoji: "⭐" },
-        
-        // Праздники, связанные с профессиями (дополнительно)
-        { keywords: ["день строителя"], emoji: "🏗️" },
-        { keywords: ["день архитектора"], emoji: "🏛️" },
-        { keywords: ["день дизайнера"], emoji: "🎨" },
-        { keywords: ["день художника"], emoji: "🎨" },
-        { keywords: ["день музыканта"], emoji: "🎵" },
-        { keywords: ["день танцора"], emoji: "💃" },
-        { keywords: ["день артиста"], emoji: "🎭" },
-        { keywords: ["день журналиста"], emoji: "📰" },
-        { keywords: ["день писателя"], emoji: "✍️" },
-        { keywords: ["день поэта"], emoji: "📜" },
-        { keywords: ["день фото"], emoji: "📸" },
-        { keywords: ["день видео"], emoji: "🎥" },
-        { keywords: ["день режиссёра"], emoji: "🎬" },
-        { keywords: ["день сценариста"], emoji: "✍️" },
-        { keywords: ["день продюсера"], emoji: "🎬" },
-        { keywords: ["день звукорежиссёра"], emoji: "🎧" },
-        { keywords: ["день оператора"], emoji: "📹" },
-        { keywords: ["день монтажёра"], emoji: "✂️" },
-        { keywords: ["день рекламиста"], emoji: "📢" },
-        { keywords: ["день пиарщика"], emoji: "📣" },
-        { keywords: ["день маркетолога"], emoji: "📈" },
-        { keywords: ["день логиста"], emoji: "🚚" },
-        { keywords: ["день завхоза"], emoji: "🔑" },
-        { keywords: ["день уборщика"], emoji: "🧹" },
-        { keywords: ["день охранника"], emoji: "🔒" },
-        { keywords: ["день водителя"], emoji: "🚗" },
-        { keywords: ["день таксиста"], emoji: "🚖" },
-        { keywords: ["день дальнобойщика"], emoji: "🚛" },
-        { keywords: ["день лётчика"], emoji: "✈️" },
-        { keywords: ["день космонавта"], emoji: "👨‍🚀" },
-        { keywords: ["день подводника"], emoji: "🐟" },
-        { keywords: ["день десантника"], emoji: "🪂" },
-        { keywords: ["день танкиста"], emoji: "🪖" },
-        
-        // Семейные и личные
-        { keywords: ["день матери"], emoji: "👩‍👧" },
-        { keywords: ["день отца"], emoji: "👨‍👦" },
-        { keywords: ["день семьи"], emoji: "👪" },
-        { keywords: ["день любви"], emoji: "💖" },
-        { keywords: ["день влюблённых"], emoji: "💕" },
-        { keywords: ["день друга"], emoji: "👫" },
-        { keywords: ["день подруги"], emoji: "👯" },
-        { keywords: ["день брата"], emoji: "👬" },
-        { keywords: ["день сестры"], emoji: "👭" },
-        { keywords: ["день бабушки"], emoji: "👵" },
-        { keywords: ["день дедушки"], emoji: "👴" },
-        { keywords: ["день ребёнка"], emoji: "🧒" },
-        { keywords: ["день молодёжи"], emoji: "🧑‍🎓" },
-        
-        // Юмор и необычные праздники
-        { keywords: ["день смеха"], emoji: "😂" },
-        { keywords: ["день шутки"], emoji: "🤣" },
-        { keywords: ["день улыбки"], emoji: "😁" },
-        { keywords: ["день объятий"], emoji: "🤗" },
-        { keywords: ["день поцелуев"], emoji: "😘" },
-        { keywords: ["день лени"], emoji: "😴" },
-        { keywords: ["день счастья"], emoji: "😊" },
-        { keywords: ["день чуда"], emoji: "✨" },
-        { keywords: ["день фантазии"], emoji: "🌈" },
-        { keywords: ["день мечты"], emoji: "💭" },
-        { keywords: ["день удивления"], emoji: "😮" },
-        { keywords: ["день страха"], emoji: "😱" },
-        { keywords: ["день любопытства"], emoji: "🤔" },
-        
-        // Технологии и интернет
-        { keywords: ["интернет", "всемирная паутина"], emoji: "🌐" },
-        { keywords: ["компьютер", "пк"], emoji: "💻" },
-        { keywords: ["телефон"], emoji: "📱" },
-        { keywords: ["планшет"], emoji: "📱" },
-        { keywords: ["игра", "геймер"], emoji: "🎮" },
-        { keywords: ["кино", "фильм"], emoji: "🎬" },
-        { keywords: ["музыка", "песня"], emoji: "🎶" },
-        { keywords: ["книга", "чтение"], emoji: "📚" },
-        { keywords: ["блогер"], emoji: "📹" },
-        { keywords: ["ютуб"], emoji: "▶️" },
-        { keywords: ["тикток"], emoji: "🕺" },
-        { keywords: ["инстаграм"], emoji: "📷" },
-        
-        // Погода и времена года
+        // Погода
         { keywords: ["снег"], emoji: "❄️" },
         { keywords: ["зима"], emoji: "☃️" },
         { keywords: ["весна"], emoji: "🌸" },
@@ -244,8 +156,7 @@ function getEmojiForHoliday(holidayName) {
         { keywords: ["дождь"], emoji: "☔" },
         { keywords: ["гроза"], emoji: "⛈️" },
         { keywords: ["радуга"], emoji: "🌈" },
-        
-        // Дополнительные ключевые слова из вашего старого списка
+        // Дополнительные старые ключи
         { keywords: ["пионерии", "пионер"], emoji: "☭" },
         { keywords: ["джинсов"], emoji: "👖" },
         { keywords: ["кубик рубика", "рубика"], emoji: "🧩" },
@@ -257,7 +168,6 @@ function getEmojiForHoliday(holidayName) {
         { keywords: ["розовой пантеры"], emoji: "🐆" },
         { keywords: ["сырного суфле"], emoji: "🧀" },
         { keywords: ["торта", "devil's food cake"], emoji: "🍰" },
-        { keywords: ["пивной", "пиво"], emoji: "🍺" },
         { keywords: ["врача-травматолога", "травматолог"], emoji: "🩺" },
         { keywords: ["метрологии"], emoji: "📏" },
         { keywords: ["волги"], emoji: "🌊" },
@@ -269,15 +179,11 @@ function getEmojiForHoliday(holidayName) {
         { keywords: ["безработицы"], emoji: "📉" },
         { keywords: ["космоса"], emoji: "🚀" }
     ];
-    
-    // Поиск по ключевым словам
     for (const item of emojiMap) {
         if (item.keywords.some(keyword => lower.includes(keyword))) {
             return item.emoji;
         }
     }
-    
-    // Эмодзи по умолчанию
     return "🍻";
 }
 
@@ -326,6 +232,14 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// ========== ФУНКЦИЯ ПОИСКА ПРАЗДНИКА (ОТКРЫТИЕ БРАУЗЕРА) ==========
+function searchHoliday(holidayName) {
+    const cleanName = holidayName.replace(/[🍻🎉☭🏛️🐝🎂🍺...]/g, '').trim();
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(cleanName)}`;
+    window.open(searchUrl, '_blank');
+}
+
+// ========== ОБНОВЛЕНИЕ КАРТОЧКИ ПРАЗДНИКА ==========
 function updateHoliday() {
     if (!dataLoaded) {
         pendingUpdate = true;
@@ -339,18 +253,20 @@ function updateHoliday() {
     if (holiday.emoji === "☭") {
         emojiHtml = '<span class="red-emoji">☭</span>';
     }
-    // Важно: добавляем data-holiday-name
+    // Добавляем data-атрибут с названием праздника
     container.innerHTML = `<div class="holiday-name" data-holiday-name="${escapeHtml(holiday.name)}">${emojiHtml} ${escapeHtml(holiday.name)}</div>`;
     
+    // Обновляем дату
     const today = new Date();
     const day = String(today.getDate()).padStart(2, '0');
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const year = today.getFullYear();
     holidayCard.setAttribute('data-date', `${day}.${month}.${year}`);
     
-    // Устанавливаем обработчик на клик по названию праздника (один раз, но пересоздаётся при каждом обновлении)
+    // Обработчик клика по названию праздника
     const holidayNameDiv = document.querySelector('.holiday-name');
     if (holidayNameDiv) {
+        holidayNameDiv.style.cursor = 'pointer';
         holidayNameDiv.addEventListener('click', (e) => {
             e.stopPropagation();
             const name = holidayNameDiv.getAttribute('data-holiday-name');
@@ -358,27 +274,6 @@ function updateHoliday() {
         });
     }
 }
-    
-    let emojiHtml = holiday.emoji;
-    if (holiday.emoji === "☭") {
-        emojiHtml = '<span class="red-emoji">☭</span>';
-    }
-    container.innerHTML = `<div class="holiday-name">${emojiHtml} ${escapeHtml(holiday.name)}</div>`;
-    
-    const today = new Date();
-    const day = String(today.getDate()).padStart(2, '0');
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const year = today.getFullYear();
-    holidayCard.setAttribute('data-date', `${day}.${month}.${year}`);
-}
-// Функция для открытия поиска праздника
-function searchHoliday(holidayName) {
-    // Очищаем название от эмодзи и лишних пробелов
-    const cleanName = holidayName.replace(/[🍻🎉☭🏛️🐝🎂🍺...]/g, '').trim();
-    // Формируем URL поиска (Google)
-    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(cleanName)}`;
-    // Открываем в новой вкладке
-    window.open(searchUrl, '_blank');
-}
+
 // ========== ИНИЦИАЛИЗАЦИЯ ==========
 loadHolidaysData();
