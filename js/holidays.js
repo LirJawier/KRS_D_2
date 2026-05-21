@@ -333,7 +333,18 @@ function updateHoliday() {
     }
     const holiday = getNextHoliday();
     const container = document.getElementById('holidayContent');
+    // Внутри updateHoliday после вставки HTML
     const holidayCard = document.getElementById('holidayCard');
+    holidayCard.style.cursor = 'pointer';
+    holidayCard.addEventListener('click', (e) => {
+    // Не реагируем на клик по кнопке
+    if (e.target.closest('.refresh-btn')) return;
+    const holidayNameDiv = document.querySelector('.holiday-name');
+    if (holidayNameDiv) {
+        const name = holidayNameDiv.getAttribute('data-holiday-name');
+        searchHoliday(name);
+    }
+});
     
     let emojiHtml = holiday.emoji;
     if (holiday.emoji === "☭") {
