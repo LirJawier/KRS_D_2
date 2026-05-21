@@ -1,5 +1,5 @@
 // ========== ФОН ==========
-const MY_BACKGROUND = "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/krsn6.jpeg";
+const MY_BACKGROUND = "https://raw.githubusercontent.com/LirJawier/KRS_D_2/refs/heads/main/assets/krsn6.jpeg";
 document.body.style.backgroundImage = `url('${MY_BACKGROUND}')`;
 document.body.style.backgroundSize = "cover";
 document.body.style.backgroundPosition = "center";
