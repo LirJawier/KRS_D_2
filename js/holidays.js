@@ -1,10 +1,38 @@
-// ========== ДАННЫЕ ПРАЗДНИКОВ ==========
-const holidaysData = {
-    "05.18": ["Международный день музеев", "Арина Капустница (Рассадница)", "Всемирный день вакцины против СПИДа", "День памяти жертв депортации народов Крыма", "День памяти иконы «Неупиваемая чаша»", "День без грязной посуды", "День рождения майского жжжжука", "День Розовой Пантеры", "День сырного суфле"],
-    "05.19": ["День пионерии", "День рождения Кубика Рубика", "Иов Горошник", "День конной авиации", "День подразделений служебно-боевой подготовки МВД РФ", "День русской печи", "День пищевой революции", "День парусов на горизонте", "Всемирный день борьбы с воспалительными заболеваниями кишечника", "Всемирный день борьбы с гепатитом С", "День торта «Devil`s Food Cake»"],
-    "05.20": ["Всемирный день врача-травматолога", "Всемирный день метрологии", "День рождения джинсов", "Купальница", "Всемирный день пчел", "День Волги", "Европейский день моря", "День миллионера", "День собранной клубники", "День ветряных вертушек", "Праздник разливаний", "День пирога «Киш Лорен»"],
-    "05.21": ["День военного переводчика", "День инвентаризатора (День работника БТИ)", "День полярника", "День Тихоокеанского флота ВМФ России", "Вознесение Господне", "День защиты от безработицы", "Всемирный день культурного разнообразия во имя диалога и развития", "Международный день космоса", "Иван Долгий", "День работников культуры и искусства – Казахстан", "День официантов и официанток", "День музы и вдохновения", "День обмена талисманами", "День клубники со сливками"]
-};
+// ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+let holidaysData = {};          // будет заполнено из JSON
+let currentQueue = [];
+let queuePointer = 0;
+let lastDateKey = '';
+let dataLoaded = false;
+let pendingUpdate = false;
+
+// ========== ФУНКЦИЯ ЗАГРУЗКИ ДАННЫХ ==========
+async function loadHolidaysData() {
+    try {
+        const response = await fetch('data/holidays.json');
+        if (!response.ok) throw new Error('Ошибка загрузки holidays.json');
+        holidaysData = await response.json();
+        dataLoaded = true;
+        console.log('✅ Данные праздников загружены');
+        
+        // Если было отложенное обновление — выполняем
+        if (pendingUpdate) {
+            rebuildQueue(getTodayKey());
+            updateHoliday();
+            pendingUpdate = false;
+        }
+    } catch (error) {
+        console.error('❌ Не удалось загрузить праздники:', error);
+        // Фallback: пустой объект, чтобы не ломалась очередь
+        holidaysData = {};
+        dataLoaded = true;
+        if (pendingUpdate) {
+            rebuildQueue(getTodayKey());
+            updateHoliday();
+            pendingUpdate = false;
+        }
+    }
+}
 
 // ========== ФУНКЦИЯ ПОДБОРА ЭМОДЗИ ==========
 function getEmojiForHoliday(holidayName) {
@@ -39,11 +67,7 @@ function getEmojiForHoliday(holidayName) {
     return "🍻";
 }
 
-// ========== ЛОГИКА ОЧЕРЕДИ ПРАЗДНИКОВ ==========
-let currentQueue = [];
-let queuePointer = 0;
-let lastDateKey = '';
-
+// ========== ЛОГИКА ОЧЕРЕДИ ==========
 function getTodayKey() {
     const today = new Date();
     const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -89,6 +113,10 @@ function escapeHtml(text) {
 }
 
 function updateHoliday() {
+    if (!dataLoaded) {
+        pendingUpdate = true;
+        return;
+    }
     const holiday = getNextHoliday();
     const container = document.getElementById('holidayContent');
     const holidayCard = document.getElementById('holidayCard');
@@ -106,5 +134,5 @@ function updateHoliday() {
     holidayCard.setAttribute('data-date', `${day}.${month}.${year}`);
 }
 
-// Инициализация очереди
-rebuildQueue(getTodayKey());
+// ========== ИНИЦИАЛИЗАЦИЯ ==========
+loadHolidaysData();
