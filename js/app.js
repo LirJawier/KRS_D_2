@@ -21,5 +21,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Инициализация счётчика
-    initCounter();
+    startCounter();
 });
