@@ -1,7 +1,11 @@
 // ========== НАСТРОЙКИ ==========
 const BOT_API_URL = "https://kd-lirjawier.amvera.io";
 
-// ========== ПОЛУЧЕНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ ИЗ TELEGRAM (с ожиданием) ==========
+// Флаги для однократного выполнения
+let isUserInitialized = false;
+let isVisitSent = false;
+
+// ========== ПОЛУЧЕНИЕ ПОЛЬЗОВАТЕЛЯ ИЗ TELEGRAM ==========
 async function getTelegramUser() {
     return new Promise((resolve) => {
         if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
@@ -9,7 +13,7 @@ async function getTelegramUser() {
             return;
         }
         let attempts = 0;
-        const maxAttempts = 75; // 3 секунды
+        const maxAttempts = 75;
         const interval = setInterval(() => {
             attempts++;
             if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
@@ -23,26 +27,22 @@ async function getTelegramUser() {
     });
 }
 
-// ========== ИНИЦИАЛИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ ==========
+// ========== ИНИЦИАЛИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ (один раз) ==========
 let userId = localStorage.getItem('tg_user_id');
 let userUsername = localStorage.getItem('tg_username');
 
-// Флаг, чтобы не инициализировать повторно
-let isInitialized = false;
-
 async function initUser() {
-    if (isInitialized) return;
-    isInitialized = true;
+    if (isUserInitialized) return;
+    isUserInitialized = true;
 
-    // Если ID уже есть в localStorage – используем его (проверяем актуальность)
+    // Если ID уже есть в localStorage
     if (userId) {
-        // Но могли измениться username (если пользователь добавил его позже)
+        // Обновляем username, если он появился в Telegram
         const tgUser = await getTelegramUser();
         if (tgUser && tgUser.username && userUsername !== tgUser.username) {
             userUsername = tgUser.username;
             localStorage.setItem('tg_username', userUsername);
         }
-        // Никакой повторной отправки визита здесь не делаем!
         return;
     }
 
@@ -51,11 +51,11 @@ async function initUser() {
     if (tgUser) {
         userId = tgUser.id.toString();
         userUsername = tgUser.username || null;
-        console.log('✅ Telegram user:', userId, 'Username:', userUsername);
+        console.log('✅ Новый Telegram user:', userId, 'Username:', userUsername);
     } else {
         userId = 'web_' + Math.random().toString(36).substr(2, 9);
         userUsername = null;
-        console.log('🌐 Web user:', userId);
+        console.log('🌐 Новый Web user:', userId);
     }
 
     localStorage.setItem('tg_user_id', userId);
@@ -64,12 +64,14 @@ async function initUser() {
     }
 }
 
-// ========== ОТПРАВКА ВИЗИТА (только после полной инициализации) ==========
+// ========== ОТПРАВКА ВИЗИТА (гарантированно один раз за сессию) ==========
 async function trackVisit() {
+    if (isVisitSent) return;
     if (!userId) {
         console.warn('❌ trackVisit: userId не определён');
         return;
     }
+    isVisitSent = true;
     try {
         const response = await fetch(`${BOT_API_URL}/track`, {
             method: 'POST',
@@ -81,6 +83,7 @@ async function trackVisit() {
         });
         const data = await response.json();
         updateStatsDisplay(data.total, data.unique);
+        console.log('✅ Визит отправлен:', data);
     } catch (err) {
         console.warn('❌ Не удалось отправить визит:', err);
     }
@@ -98,7 +101,6 @@ async function loadStats() {
     }
 }
 
-// ========== ОБНОВЛЕНИЕ ОТОБРАЖЕНИЯ ==========
 function updateStatsDisplay(total, unique) {
     const totalEl = document.getElementById('total');
     const uniqueEl = document.getElementById('unique');
@@ -106,17 +108,14 @@ function updateStatsDisplay(total, unique) {
     if (uniqueEl) uniqueEl.innerText = unique;
 }
 
-// ========== ОТДЕЛЬНЫЙ ЗАПУСК ИНИЦИАЛИЗАЦИИ И ОТПРАВКИ ВИЗИТА ==========
-// Эта функция должна вызываться один раз после загрузки страницы
+// ========== ГЛАВНАЯ ФУНКЦИЯ ЗАПУСКА ==========
 async function startCounter() {
-    await initUser();
-    // Загружаем статистику (показываем текущие цифры)
-    await loadStats();
-    // Отправляем визит (увеличивает счётчики)
-    await trackVisit();
+    await initUser();          // определяем userId (один раз)
+    await loadStats();         // показываем текущую статистику
+    await trackVisit();        // отправляем визит (один раз)
 }
 
-// Экспортируем функцию для вызова из app.js
+// Экспортируем для app.js
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { startCounter };
 }
