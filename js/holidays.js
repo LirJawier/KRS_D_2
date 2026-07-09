@@ -138,7 +138,6 @@ function updateHoliday() {
     holidayCard.setAttribute('data-date', `${day}.${month}.${year}`);
     
     const holidayNameDiv = document.querySelector('.holiday-name');
-    const holidayNameDiv = document.querySelector('.holiday-name');
     if (holidayNameDiv) {
         holidayNameDiv.style.cursor = 'pointer';
         holidayNameDiv.addEventListener('click', (e) => {
