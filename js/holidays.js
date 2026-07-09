@@ -106,9 +106,13 @@ function escapeHtml(text) {
 
 // ========== ФУНКЦИЯ ПОИСКА ==========
 function searchHoliday(holidayName) {
-    const cleanName = holidayName.replace(/[🍻🎉☭🏛️🐝🎂🍺...]/g, '').trim();
+    const cleanName = holidayName.replace(/[🍻🎉☭🏛️🐝🎂🍺]/g, '').trim();
     const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(cleanName)}`;
-    window.open(searchUrl, '_blank');
+    if (window.Telegram && Telegram.WebApp) {
+        Telegram.WebApp.openLink(searchUrl);
+    } else {
+        window.open(searchUrl, '_blank');
+    }
 }
 
 // ========== ОБНОВЛЕНИЕ КАРТОЧКИ ==========
@@ -133,6 +137,7 @@ function updateHoliday() {
     const year = today.getFullYear();
     holidayCard.setAttribute('data-date', `${day}.${month}.${year}`);
     
+    const holidayNameDiv = document.querySelector('.holiday-name');
     const holidayNameDiv = document.querySelector('.holiday-name');
     if (holidayNameDiv) {
         holidayNameDiv.style.cursor = 'pointer';
