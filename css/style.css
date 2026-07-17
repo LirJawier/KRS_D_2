@@ -46,7 +46,6 @@ body::before {
     width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;  /* прижимаем содержимое к верху */
     align-items: center;          /* центрируем по горизонтали (если нужно) */
     flex-grow: 1;
 }
